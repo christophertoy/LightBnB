@@ -95,28 +95,13 @@ exports.getAllReservations = getAllReservations;
 
 
   const getAllProperties = function(options, limit = 10) {
-    // set up array to hold paramters
     const queryParams = [];
     
-    // start query with all inform that comes before the WHERE clause
     let queryString = `SELECT properties.*, AVG(rating) AS average_rating
     FROM properties
     JOIN property_reviews ON properties.id = property_reviews.property_id
     `;
 
-    
-    //   for(const item in Object.values(options))
-      
-    //   // check if a city has been passed in as an option, add the city to the params array and create a WHERE clause for the city
-
-    //   if (item) {
-    //     queryParams.push(`%${item}%`);
-    //     queryString += `WHERE ${item} LIKE $${queryParams.length} `;
-    //   } 
-  // }
-  
-    
-    // check if a city has been passed in as an option, add the city to the params array and create a WHERE clause for the city
     if (options.city) {
       queryParams.push(`%${options.city}%`);
       queryString += `WHERE city LIKE $${queryParams.length} `;
@@ -161,14 +146,11 @@ exports.getAllReservations = getAllReservations;
         queryString += `HAVING AVG(property_reviews.rating) >= $${queryParams.length}`;
     }
 
-    // add any query thay comes after the WHERE clause
     queryParams.push(limit);
     queryString += `
     ORDER BY cost_per_night
     LIMIT $${queryParams.length};
     `;
-
-    console.log(queryString, queryParams);
 
   return pool.query(queryString, queryParams)
   .then(res => res.rows);
@@ -185,10 +167,7 @@ exports.getAllProperties = getAllProperties;
  * @return {Promise<{}>} A promise to the property.
  */
 const addProperty = function(property) {
-  // const propertyId = Object.keys(properties).length + 1;
-  // property.id = propertyId;
-  // properties[propertyId] = property;
-  // return Promise.resolve(property);
+
 return pool.query(`INSERT INTO properties (owner_id, title, description, thumbnail_photo_url, cover_photo_url,
   cost_per_night, street, city, province, post_code, country, parking_spaces, number_of_bathrooms, number_of_bedrooms)
   VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
@@ -201,18 +180,4 @@ property.parking_spaces, property.number_of_bathrooms, property.number_of_bedroo
 }
 exports.addProperty = addProperty;
 
-// {
-//   owner_id: int,
-//   title: string,
-//   description: string,
-//   thumbnail_photo_url: string,
-//   cover_photo_url: string,
-//   cost_per_night: string,
-//   street: string,
-//   city: string,
-//   province: string,
-//   post_code: string,
-//   country: string,
-//   parking_spaces: int,
-//   number_of_bathrooms: int,
-//   number_of_bedrooms: int
+
